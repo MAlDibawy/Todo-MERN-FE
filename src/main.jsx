@@ -8,11 +8,15 @@ import "./index.css";
 
 import "bootstrap/dist/js/bootstrap.bundle";
 import axios from "axios";
+import { Provider } from "react-redux";
+import { store } from "./app/store";
 
 axios.defaults.baseURL = import.meta.env.VITE_REACT_APP_SERVER_URL;
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>
 );

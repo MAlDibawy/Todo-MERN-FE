@@ -3,13 +3,14 @@ import "./App.css";
 import { ThemeProvider } from "styled-components";
 import { darkTheme, GlobalStyles, lightTheme } from "./theme";
 import { Switch } from "@mui/material";
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Header from "./components/Header/Header";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -34,6 +35,7 @@ function App() {
             <Route path="/login" element={<Login />} />
           </Routes>
         </Router>
+        <ToastContainer />
       </div>
     </ThemeProvider>
   );

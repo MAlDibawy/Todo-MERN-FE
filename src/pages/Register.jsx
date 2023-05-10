@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { reset, register } from "../features/auth/authSlice";
+import LoadingScreen from "./../components/LoadingScreen/LoadingScreen";
 
 export default function Register() {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
   const validateSchema = Yup.object().shape({
     name: Yup.string().min(3).required("please enter your name."),
     email: Yup.string()
@@ -30,7 +37,22 @@ export default function Register() {
     validationSchema: validateSchema,
   });
 
-  async function submitRegister(userData) {}
+  async function submitRegister(userData) {
+    dispatch(register(userData));
+  }
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    } else if (isSuccess || user) {
+      navigate("/");
+    }
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <>
