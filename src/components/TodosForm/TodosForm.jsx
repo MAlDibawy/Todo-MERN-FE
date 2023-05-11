@@ -1,15 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { addTodo } from "../../features/Todos/TodosSlice";
 
-export default function TodosForm({ addTodo }) {
+export default function TodosForm() {
   const [inputText, setInputText] = useState("");
   const inputRef = useRef(null);
+  const dispatch = useDispatch();
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (inputText.trim() !== "") {
+      dispatch(addTodo({ item: inputText }));
+    }
+    setInputText("");
+  };
   useEffect(() => {
     inputRef.current.focus();
   }, []);
 
   return (
-    <form onSubmit={addTodo}>
+    <form onSubmit={handleSubmit}>
       <div className="d-flex  justify-content-center py-4">
         <input
           onChange={(e) => {

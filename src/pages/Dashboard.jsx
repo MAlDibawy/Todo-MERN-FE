@@ -2,112 +2,72 @@ import React from "react";
 import { useEffect, useState } from "react";
 import TodoItem from "../components/todoItem/TodoItem";
 import TodoImage from "/cfd969583ee9557cb6d7ac303d0d2a80.svg";
-import TodosForm from "./../components/TodosForm";
-import axios from "axios";
+import TodosForm from "./../components/TodosForm/TodosForm";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getTodos, reset } from "../features/Todos/TodosSlice";
+import LoadingScreen from "./../components/LoadingScreen/LoadingScreen";
+import { deleteTodo, updateTodo } from "./../features/Todos/TodosSlice";
 
 export default function Dashboard() {
-  const [todos, setTodos] = useState([]);
+  // const [todos, setTodos] = useState([]);
 
   const [hideDone, setHideDone] = useState(false);
 
-  const addTodo = async (e) => {
-    e.preventDefault();
-    if (inputText.trim() !== "") {
-      try {
-        const res = await axios.post(`/api/addItem`, {
-          item: inputText,
-        });
-        console.log(res.data);
-        setTodos((prevState) => [...prevState, res.data]);
-      } catch (error) {
-        console.log(error);
-      }
-      setInputText("");
+  const { user } = useSelector((state) => state.auth);
+  const { todos, isLoading, isError, message } = useSelector(
+    (state) => state.todos
+  );
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isError) {
+      // console.log(message);
     }
-  };
+
+    if (!user) {
+      navigate("/login");
+    } else {
+      getAllTodos();
+    }
+    return () => {
+      dispatch(reset());
+    };
+  }, [user, navigate, isError, message, dispatch]);
 
   const getAllTodos = async () => {
-    try {
-      const res = await axios.get(`/api/getAllTodos`);
-      setTodos(res.data);
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(getTodos());
   };
 
-  const editTodo = async (todoID, newValue) => {
-    if (newValue.trim() !== "") {
-      try {
-        const res = await axios.patch(`/api/updateTodo/${todoID}`, {
-          item: newValue,
-        });
-        setTodos((prevState) => {
-          const newTodos = prevState.map((todo) => {
-            if (todo._id === todoID && todo.value !== newValue) {
-              return { ...todo, value: newValue };
-            } else {
-              return todo;
-            }
-          });
-          return newTodos;
-        });
-        console.log(res);
-      } catch (error) {
-        console.log(error);
-      }
-    }
+  const editTodo = async (updateObj) => {
+    dispatch(updateTodo(updateObj));
   };
 
-  const changeDone = async (todoId, doneValue) => {
-    setTodos((prevState) => {
-      const newTodos = prevState.map((todo) => {
-        if (todo._id === todoId) {
-          return { ...todo, done: doneValue };
-        } else {
-          return todo;
-        }
-      });
-      return newTodos;
-    });
-
-    try {
-      const res = await axios.patch(`/api/updateTodo/${todoId}`, {
-        done: doneValue,
-      });
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
+  const removeTodo = async (id) => {
+    dispatch(deleteTodo(id));
   };
-
-  const removeTodo = async (todoId) => {
-    const confirm = window.confirm("Are you sure you want delete this todo?");
-    if (!confirm) return;
-    try {
-      const res = await axios.delete(`/api/deleteTodo/${todoId}`);
-      const newTodos = todos.filter((todo) => todo._id !== todoId);
-      setTodos(newTodos);
-      console.log(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const toggleShowDone = () => {
     setHideDone((prevState) => !prevState);
   };
 
-  useEffect(() => {
-    // getAllTodos();
-  }, []);
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <>
+      <h2 className="text-center">Welcome {user && user.name}</h2>
       <TodosForm />
       <div className=" text-center mb-2">
-        <span onClick={toggleShowDone} role="button">
-          {hideDone ? "Show completed todos" : "Hide completed todos"}
-        </span>
+        {todos.length > 0 ? (
+          <span onClick={toggleShowDone} role="button">
+            {hideDone ? "Show completed todos" : "Hide completed todos"}
+          </span>
+        ) : (
+          <h4 className="mb-3">Start adding your todos now </h4>
+        )}
       </div>
       <div className="d-flex flex-column-reverse">
         {todos.length == 0 ? (
@@ -126,7 +86,6 @@ export default function Dashboard() {
               <TodoItem
                 key={todo._id}
                 todo={todo}
-                changeDone={changeDone}
                 removeTodo={removeTodo}
                 editTodo={editTodo}
               />

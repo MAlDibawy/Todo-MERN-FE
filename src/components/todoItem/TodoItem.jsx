@@ -9,9 +9,13 @@ export default function TodoItem({ todo, changeDone, removeTodo, editTodo }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editValue.trim() !== "") {
-      editTodo(_id, editValue);
+      const updateObj = {
+        _id,
+        editValue,
+      };
+      editTodo(updateObj);
     } else {
-      setEditValue(value);
+      setEditValue(item);
     }
     inputRef.current.blur();
   };
