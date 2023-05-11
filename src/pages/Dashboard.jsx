@@ -7,11 +7,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getTodos, reset } from "../features/Todos/TodosSlice";
 import LoadingScreen from "./../components/LoadingScreen/LoadingScreen";
-import { deleteTodo, updateTodo } from "./../features/Todos/TodosSlice";
+import {
+  deleteTodo,
+  updateTodo,
+  checkTodo,
+} from "./../features/Todos/TodosSlice";
 
 export default function Dashboard() {
-  // const [todos, setTodos] = useState([]);
-
   const [hideDone, setHideDone] = useState(false);
 
   const { user } = useSelector((state) => state.auth);
@@ -24,7 +26,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (isError) {
-      // console.log(message);
+      console.log(message);
     }
 
     if (!user) {
@@ -45,9 +47,14 @@ export default function Dashboard() {
     dispatch(updateTodo(updateObj));
   };
 
+  const changeDone = async (updateObj) => {
+    dispatch(checkTodo(updateObj));
+  };
+
   const removeTodo = async (id) => {
     dispatch(deleteTodo(id));
   };
+
   const toggleShowDone = () => {
     setHideDone((prevState) => !prevState);
   };
@@ -88,6 +95,7 @@ export default function Dashboard() {
                 todo={todo}
                 removeTodo={removeTodo}
                 editTodo={editTodo}
+                changeDone={changeDone}
               />
             ))
         )}

@@ -20,13 +20,21 @@ export default function TodoItem({ todo, changeDone, removeTodo, editTodo }) {
     inputRef.current.blur();
   };
 
+  const handleCheck = (_id, doneValue) => {
+    const updateObj = {
+      _id,
+      editValue: doneValue,
+    };
+    changeDone(updateObj);
+  };
+
   return (
     <>
       <div className="col-lg-8 col-11 m-auto p-2">
         <div className="todoItem d-flex justify-content-between rounded border-0 align-items-center px-2">
           <div className="d-flex align-items-center justify-content-around">
             <div
-              onClick={() => changeDone(_id, !done)}
+              onClick={() => handleCheck(_id, !done)}
               className="done d-flex align-items-center justify-content-center"
               style={{
                 backgroundColor: done ? "#0B5ED7" : "white",

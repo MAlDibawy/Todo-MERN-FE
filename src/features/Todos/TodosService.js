@@ -26,10 +26,19 @@ export const updateTodo = async (updateValue, todoID, userToken) => {
             Authorization: `Bearer ${userToken}`
         },
     }
-    // console.log(todoID);
     const newValue = { item: updateValue };
     const response = await axios.patch(`/api/updateTodo/${todoID}`, newValue, config)
-    // console.log(response.data)
+    return response.data;
+}
+
+export const checkTodo = async (editValue, todoID, userToken) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${userToken}`
+        },
+    }
+    const newValue = { done: editValue };
+    const response = await axios.patch(`/api/updateTodo/${todoID}`, newValue, config);
     return response.data;
 }
 
@@ -47,7 +56,8 @@ const goalService = {
     createTodo,
     getTodos,
     updateTodo,
-    deleteTodo
+    deleteTodo,
+    checkTodo
 }
 
 export default goalService;
