@@ -52,7 +52,8 @@ export const checkTodo = createAsyncThunk('todos/checkTodo', async (updateObj, t
 export const deleteTodo = createAsyncThunk('/todos/deleteTodo', async (todoID, thunkAPI) => {
     try {
         const userToken = thunkAPI.getState().auth.user.token;
-        return await TodosService.deleteTodo(todoID, userToken);
+        await TodosService.deleteTodo(todoID, userToken);
+        return { id: todoID };
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         return thunkAPI.rejectWithValue(message);
