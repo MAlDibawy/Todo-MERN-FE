@@ -32,7 +32,8 @@ export const getTodos = createAsyncThunk('todos/getTodos', async (_, thunkAPI) =
 export const updateTodo = createAsyncThunk('todos/updateTodo', async (updateObj, thunkAPI) => {
     try {
         const userToken = thunkAPI.getState().auth.user.token;
-        return await TodosService.updateTodo(updateObj.editValue, updateObj._id, userToken);
+        await TodosService.updateTodo(updateObj.editValue, updateObj._id, userToken);
+        return { id: updateObj._id, value: { item: updateObj.editValue } }
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         return thunkAPI.rejectWithValue(message);
@@ -42,7 +43,8 @@ export const updateTodo = createAsyncThunk('todos/updateTodo', async (updateObj,
 export const checkTodo = createAsyncThunk('todos/checkTodo', async (updateObj, thunkAPI) => {
     try {
         const userToken = thunkAPI.getState().auth.user.token;
-        return await TodosService.checkTodo(updateObj.editValue, updateObj._id, userToken);
+        await TodosService.checkTodo(updateObj.editValue, updateObj._id, userToken);
+        return { id: updateObj._id, done: updateObj.editValue };
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         return thunkAPI.rejectWithValue(message);
@@ -111,7 +113,7 @@ export const todosSlice = createSlice({
             .addCase(checkTodo.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                state.todos = state.todos.map(todo => todo._id === action.payload.id ? { ...todo, done: action.payload.value.done } : todo)
+                state.todos = state.todos.map(todo => todo._id === action.payload.id ? { ...todo, done: action.payload.done } : todo)
             }).addCase(checkTodo.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
