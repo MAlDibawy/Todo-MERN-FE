@@ -38,7 +38,7 @@ export default function TodoItem({ todo, changeDone, removeTodo, editTodo }) {
             onClick={() => handleCheck(_id, !done)}
             className="done d-flex align-items-center justify-content-center"
             style={{
-              backgroundColor: done ? "#0B5ED7" : "white",
+              backgroundColor: isDone ? "#0B5ED7" : "white",
             }}
           >
             <i className="fa-solid fa-check d-inline p-2 text-white"></i>
