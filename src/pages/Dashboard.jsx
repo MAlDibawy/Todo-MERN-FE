@@ -53,7 +53,6 @@ export default function Dashboard() {
 
   const removeTodo = async (id) => {
     dispatch(deleteTodo(id));
-    todos = todos.filter(todo => todo.id !== id);
   };
 
   const toggleShowDone = () => {
