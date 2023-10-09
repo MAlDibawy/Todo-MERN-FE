@@ -37,7 +37,7 @@ export default function Dashboard() {
     return () => {
       dispatch(reset());
     };
-  }, [user, navigate, isError, message, dispatch]);
+  }, [user, isError]);
 
   const getAllTodos = async () => {
     dispatch(getTodos());

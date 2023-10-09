@@ -22,11 +22,11 @@ button ::placeholder {
   background-color: #d4d4d4;
 }
 
-.deleteIcon {
+/* .deleteIcon {
   color: transparent;
-}
+} */
 
-.todoItem:hover .deleteIcon {
+.todoItem .deleteIcon:hover {
   color: #f22c2c;
 }
 
@@ -62,4 +62,8 @@ button ::placeholder {
 .todoInput input:focus {
   background-color: white !important;
   border: 0 !important;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.1rem rgba(13,110,253,.25) !important;
 }
